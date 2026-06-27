@@ -7,6 +7,10 @@ import { playerRouter } from './player.router'
 import { employeeRouter } from './employee.router'
 import { roleRouter } from './role.router'
 import { tournamentRouter } from './tournament.router'
+import { cashTableRouter } from './cashTable.router'
+import { tabRouter } from './tab.router'
+import { productRouter } from './product.router'
+import { cashRegisterRouter } from './cashRegister.router'
 
 export const appRouter = router({
   auth: authRouter,
@@ -17,6 +21,10 @@ export const appRouter = router({
   employee: employeeRouter,
   role: roleRouter,
   tournament: tournamentRouter,
+  cashTable: cashTableRouter,
+  tab: tabRouter,
+  product: productRouter,
+  cashRegister: cashRegisterRouter,
 })
 
 export type AppRouter = typeof appRouter
