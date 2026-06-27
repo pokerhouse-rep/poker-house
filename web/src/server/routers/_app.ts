@@ -6,6 +6,7 @@ import { accountRouter } from './account.router'
 import { playerRouter } from './player.router'
 import { employeeRouter } from './employee.router'
 import { roleRouter } from './role.router'
+import { tournamentRouter } from './tournament.router'
 
 export const appRouter = router({
   auth: authRouter,
@@ -15,6 +16,7 @@ export const appRouter = router({
   player: playerRouter,
   employee: employeeRouter,
   role: roleRouter,
+  tournament: tournamentRouter,
 })
 
 export type AppRouter = typeof appRouter
