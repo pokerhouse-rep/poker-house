@@ -1,11 +1,8 @@
 import { router } from '../trpc'
+import { authRouter } from './auth.router'
 
 export const appRouter = router({
-  // Routers serão adicionados conforme desenvolvimento de cada módulo
-  // auth: authRouter,
-  // player: playerRouter,
-  // tournament: tournamentRouter,
-  // etc.
+  auth: authRouter,
 })
 
 export type AppRouter = typeof appRouter
