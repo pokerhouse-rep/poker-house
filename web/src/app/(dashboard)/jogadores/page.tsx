@@ -1,0 +1,122 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Plus, Search } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { PageHeader } from '@/components/shared/page-header'
+import { DataTable } from '@/components/shared/data-table'
+
+type Player = {
+  id: string
+  nome: string
+  nickname: string | null
+  cpf: string
+  telefone: string
+  status: string
+  tags: string[]
+  wallet: { saldo_disponivel: number } | null
+}
+
+export default function JogadoresPage() {
+  const router = useRouter()
+  const [search, setSearch] = useState('')
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  // TODO: substituir por tRPC query
+  const players: Player[] = []
+  const total = 0
+  const page = 1
+
+  const columns = [
+    {
+      header: 'Jogador',
+      accessor: (row: Player) => (
+        <div>
+          <p className="font-medium text-white">{row.nome}</p>
+          {row.nickname && <p className="text-xs text-zinc-500">@{row.nickname}</p>}
+        </div>
+      ),
+    },
+    { header: 'CPF', accessor: (row: Player) => formatCpf(row.cpf) },
+    { header: 'Telefone', accessor: 'telefone' as keyof Player },
+    {
+      header: 'Status',
+      accessor: (row: Player) => (
+        <Badge variant={row.status === 'ATIVO' ? 'default' : 'destructive'} className={
+          row.status === 'ATIVO' ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20' : ''
+        }>
+          {row.status}
+        </Badge>
+      ),
+    },
+    {
+      header: 'Tags',
+      accessor: (row: Player) => (
+        <div className="flex gap-1">
+          {row.tags.map((tag) => (
+            <Badge key={tag} variant="outline" className="border-zinc-700 text-zinc-400 text-[10px]">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+      ),
+    },
+    {
+      header: 'Saldo',
+      accessor: (row: Player) => (
+        <span className="text-emerald-400 font-medium">
+          R$ {Number(row.wallet?.saldo_disponivel || 0).toFixed(2)}
+        </span>
+      ),
+      className: 'text-right',
+    },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title="Jogadores"
+        description="Gerencie os jogadores da casa"
+        actions={
+          <Button
+            className="bg-emerald-600 hover:bg-emerald-700"
+            onClick={() => setDialogOpen(true)}
+          >
+            <Plus size={16} className="mr-2" />
+            Novo Jogador
+          </Button>
+        }
+      />
+
+      <div className="flex gap-3">
+        <div className="relative flex-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+          <Input
+            placeholder="Buscar por nome, CPF ou nickname..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border-zinc-700 bg-zinc-900 pl-9 text-white placeholder:text-zinc-500"
+          />
+        </div>
+      </div>
+
+      <DataTable
+        columns={columns}
+        data={players}
+        total={total}
+        page={page}
+        onRowClick={(row) => router.push(`/jogadores/${row.id}`)}
+        emptyMessage="Nenhum jogador cadastrado"
+      />
+    </div>
+  )
+}
+
+function formatCpf(cpf: string): string {
+  const d = cpf.replace(/\D/g, '')
+  if (d.length !== 11) return cpf
+  return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`
+}
