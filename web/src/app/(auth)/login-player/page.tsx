@@ -134,11 +134,11 @@ export default function LoginPlayerPage() {
               {loading ? 'Entrando...' : 'Entrar'}
             </Button>
 
-            <div className="text-center">
-              <a
-                href="/login"
-                className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors"
-              >
+            <div className="flex items-center justify-between">
+              <a href="/forgot-password" className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+                Esqueci a senha
+              </a>
+              <a href="/login" className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors">
                 Acesso administrativo
               </a>
             </div>
