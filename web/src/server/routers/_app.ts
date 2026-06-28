@@ -22,6 +22,7 @@ import { auditRouter } from './audit.router'
 import { reportRouter } from './report.router'
 import { platformRouter } from './platform.router'
 import { dashboardRouter } from './dashboard.router'
+import { blindStructureRouter } from './blindStructure.router'
 
 export const appRouter = router({
   auth: authRouter,
@@ -47,6 +48,7 @@ export const appRouter = router({
   report: reportRouter,
   platform: platformRouter,
   dashboard: dashboardRouter,
+  blindStructure: blindStructureRouter,
 })
 
 export type AppRouter = typeof appRouter
