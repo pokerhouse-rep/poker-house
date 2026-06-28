@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { TRPCProvider } from '@/lib/trpc/provider'
@@ -12,18 +12,19 @@ export const metadata: Metadata = {
   title: 'Poker Club - Gestão de Casas de Poker',
   description: 'Plataforma SaaS para gerenciamento completo de casas de poker',
   manifest: '/manifest.json',
-  themeColor: '#059669',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'Poker Club',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#059669',
 }
 
 export default function RootLayout({

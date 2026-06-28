@@ -209,6 +209,82 @@ async function main() {
   })
   console.log(`✅ ${produtos.length} produtos criados`)
 
+  // 8. Mesas de cash
+  await prisma.cashTable.create({
+    data: {
+      organization_id: org.id,
+      nome: 'Mesa 1',
+      modalidade: 'NL Hold\'em',
+      stakes: '2/5',
+      blind_small: 2,
+      blind_big: 5,
+      buyin_minimo: 200,
+      buyin_maximo: 1000,
+      max_jogadores: 9,
+      rake_tipo: 'POT_RAKE',
+      rake_percentual: 5,
+      rake_cap: 30,
+    },
+  })
+  await prisma.cashTable.create({
+    data: {
+      organization_id: org.id,
+      nome: 'Mesa 2',
+      modalidade: 'PLO',
+      stakes: '5/10',
+      blind_small: 5,
+      blind_big: 10,
+      buyin_minimo: 500,
+      buyin_maximo: 2000,
+      max_jogadores: 6,
+      rake_tipo: 'POT_RAKE',
+      rake_percentual: 5,
+      rake_cap: 50,
+    },
+  })
+  console.log(`✅ 2 mesas de cash criadas`)
+
+  // 9. Torneio inaugural
+  await prisma.tournament.create({
+    data: {
+      organization_id: org.id,
+      nome: 'NL Hold\'em R$100 — Inaugural',
+      status: 'INSCRICOES_ABERTAS',
+      buyin_valor: 100,
+      rake_valor: 20,
+      chip_dealer_valor: 10,
+      starting_stack: 15000,
+      garantido_ativo: true,
+      garantido_valor: 5000,
+      late_registration_ativo: true,
+      late_registration_ate_nivel: 6,
+      rebuy_ativo: true,
+      rebuy_maximo: 1,
+      rebuy_valor: 100,
+      rebuy_fichas: 15000,
+      rebuy_condicao: 'BUST',
+      addon_ativo: true,
+      addon_valor: 50,
+      addon_fichas: 10000,
+      blind_structure_id: blindStructure.id,
+    },
+  })
+  console.log(`✅ Torneio inaugural criado`)
+
+  // 10. Configs padrão
+  const configs = [
+    { chave: 'rakeback_percentual', valor: 10 },
+    { chave: 'horario_abertura', valor: '18:00' },
+    { chave: 'horario_fechamento', valor: '06:00' },
+    { chave: 'comanda_auto_open', valor: false },
+  ]
+  for (const c of configs) {
+    await prisma.orgConfig.create({
+      data: { organization_id: org.id, chave: c.chave, valor: c.valor },
+    })
+  }
+  console.log(`✅ ${configs.length} configurações`)
+
   console.log('\n🎰 Seed concluído!')
   console.log(`\n📋 Dados de acesso:`)
   console.log(`   Admin: admin@pokerhouse.com.br / admin123`)
