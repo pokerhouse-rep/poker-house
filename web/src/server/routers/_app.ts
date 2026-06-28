@@ -21,6 +21,7 @@ import { loyaltyRouter } from './loyalty.router'
 import { auditRouter } from './audit.router'
 import { reportRouter } from './report.router'
 import { platformRouter } from './platform.router'
+import { dashboardRouter } from './dashboard.router'
 
 export const appRouter = router({
   auth: authRouter,
@@ -45,6 +46,7 @@ export const appRouter = router({
   audit: auditRouter,
   report: reportRouter,
   platform: platformRouter,
+  dashboard: dashboardRouter,
 })
 
 export type AppRouter = typeof appRouter

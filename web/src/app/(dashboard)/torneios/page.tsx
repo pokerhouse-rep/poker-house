@@ -6,7 +6,9 @@ import { Plus, Search, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
 import { PageHeader } from '@/components/shared/page-header'
+import { trpc } from '@/lib/trpc/client'
 
 const statusColors: Record<string, string> = {
   RASCUNHO: 'bg-zinc-500/10 text-zinc-400',
@@ -26,36 +28,26 @@ const statusLabels: Record<string, string> = {
   CANCELADO: 'Cancelado',
 }
 
-type Tournament = {
-  id: string
-  nome: string
-  status: string
-  buyin_valor: number
-  prize_pool: number
-  total_inscritos: number
-  garantido_ativo: boolean
-  garantido_valor: number | null
-  data_inicio: string | null
-}
-
 export default function TorneiosPage() {
   const router = useRouter()
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [page, setPage] = useState(1)
 
-  // TODO: substituir por tRPC query
-  const tournaments: Tournament[] = []
+  const { data, isLoading } = trpc.tournament.list.useQuery({
+    status: statusFilter || undefined,
+    page,
+    limit: 20,
+  })
+
+  const tournaments = data?.tournaments || []
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Torneios"
-        description="Gerencie torneios e inscrições"
+        description={data ? `${data.total} torneios` : 'Carregando...'}
         actions={
-          <Button
-            className="bg-emerald-600 hover:bg-emerald-700"
-            onClick={() => router.push('/torneios/novo')}
-          >
+          <Button className="bg-emerald-600 hover:bg-emerald-700">
             <Plus size={16} className="mr-2" />
             Novo Torneio
           </Button>
@@ -69,33 +61,23 @@ export default function TorneiosPage() {
             variant="ghost"
             size="sm"
             className={`text-xs ${statusFilter === s ? 'bg-zinc-800 text-white' : 'text-zinc-500'}`}
-            onClick={() => setStatusFilter(s)}
+            onClick={() => { setStatusFilter(s); setPage(1) }}
           >
             {s === '' ? 'Todos' : statusLabels[s]}
           </Button>
         ))}
       </div>
 
-      <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-        <Input
-          placeholder="Buscar torneio..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border-zinc-700 bg-zinc-900 pl-9 text-white placeholder:text-zinc-500"
-        />
-      </div>
-
-      {tournaments.length === 0 ? (
+      {isLoading ? (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-40 rounded-lg bg-zinc-800" />
+          ))}
+        </div>
+      ) : tournaments.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 py-16">
           <Trophy size={48} className="text-zinc-700" />
-          <p className="mt-4 text-zinc-500">Nenhum torneio cadastrado</p>
-          <Button
-            className="mt-4 bg-emerald-600 hover:bg-emerald-700"
-            onClick={() => router.push('/torneios/novo')}
-          >
-            Criar primeiro torneio
-          </Button>
+          <p className="mt-4 text-zinc-500">Nenhum torneio encontrado</p>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
